@@ -8,6 +8,8 @@
 package com.redocean.dtpagespeed;
 
 import com.dynatrace.diagnostics.pdk.*;
+
+import java.util.Collection;
 import java.util.logging.Logger;
 
 
@@ -106,26 +108,19 @@ public class PageSpeed implements Monitor {
 	 */
 	@Override
 	public Status execute(MonitorEnvironment env) throws Exception {
-		/* 
-		// this sample which shows how to book to (dynamic) monitor measures
 
-		Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("mymetricgroup", "mymetric");
+		Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("com.redocean.dtpagespeed.monitor", "numberResources");
 		for (MonitorMeasure subscribedMonitorMeasure : monitorMeasures) {
 
 			//this will book to the monitor measure
 			subscribedMonitorMeasure.setValue(42);
 
-			//for this subscribed measure we want to create a dynamic measure
-			MonitorMeasure dynamicMeasure = env.createDynamicMeasure(subscribedMonitorMeasure, "Queue Name", "Queue 1");
-			dynamicMeasure.setValue(24);
+			
 
-			//now we create another one for a different queue name
-			dynamicMeasure = env.createDynamicMeasure(subscribedMonitorMeasure, "Queue Name", "Queue 2");
-			dynamicMeasure.setValue(32);
 
 
 		}
-		*/
+
 		return new Status(Status.StatusCode.Success);
 	}
 
