@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 
 public class PageSpeed implements Monitor {
+	private static final String PARAM_PROTOCOL = "protocol";
+	private static final String PARAM_PATH = "path";
 	private static final String PARAM_PORT = "port";
 	private static final String PARAM_AUTHENTICATION = "authentication";
 	private static final String PARAM_FILTER_THIRD_PARTY = "filter_third_party_resources";
@@ -20,6 +22,8 @@ public class PageSpeed implements Monitor {
 	private static final Logger log = Logger.getLogger(PageSpeed.class.getName());
 
 
+	private String protocol = "https";
+	private String path = null;
 	private long port = 443;
 	private String authentication  = null;
 	private boolean filter_third_party_resources = false;
@@ -49,24 +53,28 @@ public class PageSpeed implements Monitor {
 	 */
 	@Override
 	public Status setup(MonitorEnvironment env) throws Exception {
-
 		log.finer("setup method: entering");
+		// Protocol
+		protocol = env.getConfigString(PARAM_PROTOCOL);
+		log.finer("Protocol number is : "  + protocol);
+		// Path
+		path = env.getConfigString(PARAM_PATH);
+		log.finer("Path number is : "  + port);
 		// Port number
 		port = env.getConfigLong(PARAM_PORT);
 		log.finer("Port number is : "  + port);
-
+		// Host
+		String hostname = env.getHost().getAddress();
+		log.finer("hostname is : " + hostname);
 		// Authentication
 		authentication = env.getConfigString(PARAM_AUTHENTICATION);
 		log.finer("Authentication API Key is : "  + authentication);
-
 		// Filter third party resources
 		filter_third_party_resources = env.getConfigBoolean(PARAM_FILTER_THIRD_PARTY);
 		log.finer("Filter third party resources is : "  + filter_third_party_resources);
-
 		// Rule
 		rule = env.getConfigString(PARAM_RULE);
 		log.finer("Rule is set to : "  + rule);
-
 		// Strategy
 		strategy = env.getConfigString(PARAM_STRATEGY);
 		log.finer("Strategy is set to : "  + strategy);
