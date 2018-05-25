@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: com.redocean.dtpagespeed;singleton:=true
+Bundle-Name: Dynatrace Pagespeed Monitor
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .,lib/google-api-services-pagespeedonline-v4-rev6-1.
+ 23.0.jar
+Require-Bundle: com.dynatrace.diagnostics.sdk
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Red Ocean Technology
+

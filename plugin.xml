@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<!-- plugin.xml file written by Dynatrace Client 7.1.3 -->
+<plugin>
+  <extension point="com.dynatrace.diagnostics.pdk.pluginconfig" id="com.redocean.dtpagespeed" name="Dynatrace Pagespeed Monitor">
+    <information>
+      <category value="" />
+      <displayname value="Dynatrace Pagespeed Monitor" />
+      <description value="Dynatrace Pagespeed Monitor" />
+    </information>
+    <configuration>
+      <property key="path" label="path" type="string" description="Path of URL" default="/" multiline="false" />
+      <property key="protocol" label="protocol" type="list" description="Protocol, http or https" default="https">
+        <list>
+          <item value="https" />
+          <item value="http" />
+        </list>
+      </property>
+      <property key="port" label="port" type="long" description="Port for URL &#x9;" default="443" />
+      <property key="authentication" label="API Key" type="string" description="API Key for PageSpeed" default="&lt;your api key here&gt;" multiline="false" />
+      <property key="filter_third_party_resources" label="filter_third_party_resources" type="boolean" description="Indicates if third party resources should be filtered out before PageSpeed analysis." default="false" />
+      <property key="rule" label="rule" type="string" description="A PageSpeed rule to run; if none are given, all rules are run" default="default" multiline="false" />
+      <property key="strategy" label="strategy" type="list" description="The analysis strategy (desktop or mobile) to use, and desktop is the default " default="desktop">
+        <list>
+          <item value="desktop" />
+          <item value="mobile" />
+        </list>
+      </property>
+    </configuration>
+  </extension>
+  <extension point="com.dynatrace.diagnostics.pdk.monitor" id="com.redocean.dtpagespeed.monitor" name="PageSpeed Monitor">
+    <plugin configid="com.redocean.dtpagespeed" class="com.redocean.dtpagespeed.PageSpeed" />
+  </extension>
+  <extension point="com.dynatrace.diagnostics.pdk.monitormetricgroup" id="com.redocean.dtpagespeed.monitor.pageStats" name="PageStats">
+    <metricgroup monitorid="com.redocean.dtpagespeed.monitor">
+      <metric defaultrate="purepath" name="numberResources" unit="number" description="Number of HTTP resources loaded by the page." />
+      <metric defaultrate="purepath" name="numberHosts" unit="number" description="Number of unique hosts referenced by the page." />
+      <metric defaultrate="purepath" name="totalRequestBytes" unit="bytes" description="Total size of all request bytes sent by the page." />
+      <metric defaultrate="purepath" name="numberStaticResources" unit="number" description="numberStaticResources" />
+      <metric defaultrate="purepath" name="htmlResponseBytes" unit="bytes" description="htmlResponseBytes" />
+      <metric defaultrate="purepath" name="textResponseBytes" unit="bytes" description="My metric description ..." />
+      <metric defaultrate="purepath" name="overTheWireResponseBytes" unit="bytes" description="overTheWireResponseBytes" />
+      <metric defaultrate="purepath" name="cssResponseBytes" unit="bytes" description="cssResponseBytes" />
+      <metric defaultrate="purepath" name="imageResponseBytes" unit="bytes" description="imageResponseBytes" />
+      <metric defaultrate="purepath" name="javascriptResponseBytes" unit="bytes" description="javascriptResponseBytes" />
+      <metric defaultrate="purepath" name="flashResponseBytes" unit="bytes" description="flashResponseBytes" />
+      <metric defaultrate="purepath" name="otherResponseBytes" unit="bytes" description="otherResponseBytes" />
+      <metric defaultrate="purepath" name="numberJsResources" unit="number" description="numberJsResources" />
+      <metric defaultrate="purepath" name="numberCssResources" unit="number" description="numberCssResources" />
+      <metric defaultrate="purepath" name="numberRobotedResources" unit="number" description="numberRobotedResources" />
+      <metric defaultrate="purepath" name="numberTransientFetchFailureResources" unit="number" description="numberTransientFetchFailureResources" />
+      <metric defaultrate="purepath" name="numTotalRoundTrips" unit="number" description="numTotalRoundTrips ..." />
+      <metric defaultrate="purepath" name="numRenderBlockingRoundTrips" unit="number" description="numRenderBlockingRoundTrips" />
+    </metricgroup>
+  </extension>
+  <extension point="com.dynatrace.diagnostics.pdk.monitormetricgroup" id="com.redocean.dtpagespeed.monitor.ruleGroups" name="RuleGroups">
+    <metricgroup monitorid="com.redocean.dtpagespeed.monitor">
+      <metric defaultrate="purepath" name="SPEED" unit="number" description="Google PageSpeed Score" />
+    </metricgroup>
+  </extension>
+  <extension point="com.dynatrace.diagnostics.pdk.monitormetricgroup" id="com.redocean.dtpagespeed.monitor.other" name="Other">
+    <metricgroup monitorid="com.redocean.dtpagespeed.monitor">
+      <metric defaultrate="purepath" name="responseCode" unit="number" description="HTTP Status code" />
+    </metricgroup>
+  </extension>
+</plugin>
