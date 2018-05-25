@@ -109,13 +109,13 @@ public class PageSpeed implements Monitor {
 	@Override
 	public Status execute(MonitorEnvironment env) throws Exception {
 
-		Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("com.redocean.dtpagespeed.monitor", "numberResources");
+		Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("PageStats", "numberResources");
 		for (MonitorMeasure subscribedMonitorMeasure : monitorMeasures) {
 
 			//this will book to the monitor measure
 			subscribedMonitorMeasure.setValue(42);
 
-			
+
 
 
 
