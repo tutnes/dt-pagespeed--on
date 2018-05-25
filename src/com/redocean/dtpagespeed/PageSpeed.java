@@ -20,6 +20,11 @@ public class PageSpeed implements Monitor {
 	private static final Logger log = Logger.getLogger(PageSpeed.class.getName());
 
 
+	private long port = 443;
+	private String authentication  = null;
+	private boolean filter_third_party_resources = false;
+	private String rule = null;
+	private String strategy = null;
 	/**
 	 * Initializes the Plugin. This method is called in the following cases:
 	 * <ul>
@@ -44,7 +49,28 @@ public class PageSpeed implements Monitor {
 	 */
 	@Override
 	public Status setup(MonitorEnvironment env) throws Exception {
-		// TODO
+
+		log.finer("setup method: entering");
+		// Port number
+		port = env.getConfigLong(PARAM_PORT);
+		log.finer("Port number is : "  + port);
+
+		// Authentication
+		authentication = env.getConfigString(PARAM_AUTHENTICATION);
+		log.finer("Authentication API Key is : "  + authentication);
+
+		// Filter third party resources
+		filter_third_party_resources = env.getConfigBoolean(PARAM_FILTER_THIRD_PARTY);
+		log.finer("Filter third party resources is : "  + filter_third_party_resources);
+
+		// Rule
+		rule = env.getConfigString(PARAM_RULE);
+		log.finer("Rule is set to : "  + rule);
+
+		// Strategy
+		strategy = env.getConfigString(PARAM_STRATEGY);
+		log.finer("Strategy is set to : "  + strategy);
+
 		return new Status(Status.StatusCode.Success);
 	}
 
