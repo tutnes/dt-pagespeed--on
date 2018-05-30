@@ -3,6 +3,10 @@
     <classpathentry kind="src" path="src"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+    <classpathentry kind="lib" path="lib/google-api-client-1.23.0.jar"/>
     <classpathentry kind="lib" path="lib/google-api-services-pagespeedonline-v4-rev6-1.23.0.jar"/>
+    <classpathentry kind="lib" path="lib/google-http-client-1.23.0.jar"/>
+    <classpathentry kind="lib" path="lib/google-http-client-gson-1.23.0.jar"/>
+    <classpathentry kind="lib" path="lib/gson-2.1.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

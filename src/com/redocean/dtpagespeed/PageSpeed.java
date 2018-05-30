@@ -12,8 +12,20 @@ import com.dynatrace.diagnostics.pdk.*;
 import java.util.Collection;
 import java.util.logging.Logger;
 
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.pagespeedonline.Pagespeedonline;
+import com.google.api.client.googleapis.javanet.*;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.pagespeedonline.PagespeedonlineRequest;
+import com.google.api.services.pagespeedonline.model.PagespeedApiFormatStringV4;
+import com.google.api.services.pagespeedonline.model.PagespeedApiPagespeedResponseV4;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-public class PageSpeed implements Monitor {
+ public class PageSpeed implements Monitor {
 	private static final String PARAM_PROTOCOL = "protocol";
 	private static final String PARAM_PATH = "path";
 	private static final String PARAM_PORT = "port";
@@ -31,6 +43,7 @@ public class PageSpeed implements Monitor {
 	private boolean filter_third_party_resources = false;
 	private String rule = null;
 	private String strategy = null;
+	private String hostname = null;
 	/**
 	 * Initializes the Plugin. This method is called in the following cases:
 	 * <ul>
@@ -41,7 +54,7 @@ public class PageSpeed implements Monitor {
 	 * </ul>
 	 * <p>
 	 * If the returned status is <tt>null</tt> or the status code is a
-	 * non-success code then {@link Plugin#teardown() teardown()} will be called
+	 * non-success code then  will be called
 	 * next.
 	 * <p>
 	 * Resources like sockets or files can be opened in this method.
@@ -49,7 +62,7 @@ public class PageSpeed implements Monitor {
 	 *            the configured <tt>MonitorEnvironment</tt> for this Plugin;
 	 *            contains subscribed measures, but <b>measurements will be
 	 *            discarded</b>
-	 * @see Plugin#teardown()
+	 *
 	 * @return a <tt>Status</tt> object that describes the result of the
 	 *         method call
 	 */
@@ -66,7 +79,7 @@ public class PageSpeed implements Monitor {
 		port = env.getConfigLong(PARAM_PORT);
 		log.finer("Port number is : "  + port);
 		// Host
-		String hostname = env.getHost().getAddress();
+		hostname = env.getHost().getAddress();
 		log.finer("hostname is : " + hostname);
 		// Authentication
 		authentication = env.getConfigString(PARAM_AUTHENTICATION);
@@ -108,12 +121,89 @@ public class PageSpeed implements Monitor {
 	 */
 	@Override
 	public Status execute(MonitorEnvironment env) throws Exception {
+        String urlToCheck = protocol + "://" + hostname;
 
-		Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("PageStats", "numberResources");
-		for (MonitorMeasure subscribedMonitorMeasure : monitorMeasures) {
+	    NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
+        GsonFactory factory = new GsonFactory();
+        Pagespeedonline pso = new Pagespeedonline.Builder(httpTransport, factory,null )
+                .setApplicationName(urlToCheck)
+                .build();
+
+        Pagespeedonline.Pagespeedapi.Runpagespeed psapi = pso.pagespeedapi().runpagespeed(urlToCheck)
+                .setStrategy(strategy)
+                .setFilterThirdPartyResources(filter_third_party_resources)
+                .setKey(authentication);
+
+        PagespeedApiPagespeedResponseV4 response = psapi.execute();
+
+        //Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("PageStats", "numberResources");
+        Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures();
+		for (MonitorMeasure m : monitorMeasures) {
 
 			//this will book to the monitor measure
-			subscribedMonitorMeasure.setValue(42);
+            switch(m.getMeasureName()) {
+                case "numberResources":
+                    m.setValue(response.getPageStats().getNumberResources());
+                    break;
+                case "cssResponseBytes":
+                    m.setValue(response.getPageStats().getCssResponseBytes());
+                    break;
+                case "flashResponseBytes":
+                    m.setValue(response.getPageStats().getFlashResponseBytes());
+                    break;
+                case "htmlResponseBytes":
+                    m.setValue(response.getPageStats().getHtmlResponseBytes());
+                    break;
+                case "imageResponseBytes":
+                    m.setValue(response.getPageStats().getImageResponseBytes());
+                    break;
+                case "javascriptResponseBytes":
+                    m.setValue(response.getPageStats().getJavascriptResponseBytes());
+                    break;
+                case "numRenderBlockingRoundTrips":
+                    m.setValue(response.getPageStats().getNumRenderBlockingRoundTrips());
+                    break;
+                case "numTotalRoundTrips":
+                    m.setValue(response.getPageStats().getNumTotalRoundTrips());
+                    break;
+                case "numberCssResources":
+                    m.setValue(response.getPageStats().getNumberCssResources());
+                    break;
+                case "numberHosts":
+                    m.setValue(response.getPageStats().getNumberHosts());
+                    break;
+                case "numberJsResources":
+                    m.setValue(response.getPageStats().getNumberJsResources());
+                    break;
+                case "numberRobotedResources":
+                    m.setValue(response.getPageStats().getNumberRobotedResources());
+                    break;
+                case "numberStaticResources":
+                    m.setValue(response.getPageStats().getNumberStaticResources());
+                    break;
+                case "numberTransientFetchFailureResources":
+                    m.setValue(response.getPageStats().getNumberTransientFetchFailureResources());
+                    break;
+                case "otherResponseBytes":
+                    m.setValue(response.getPageStats().getOtherResponseBytes());
+                    break;
+                case "overTheWireResponseBytes":
+                    m.setValue(response.getPageStats().getOverTheWireResponseBytes());
+                    break;
+                case "responseCode":
+                    m.setValue(response.getResponseCode());
+                    break;
+                case "textResponseBytes":
+                    m.setValue(response.getPageStats().getTextResponseBytes());
+                    break;
+                case "totalRequestBytes":
+                    m.setValue(response.getPageStats().getTotalRequestBytes());
+                    break;
+                default:
+                    m.setValue(0);
+            }
+
 
 
 
@@ -123,6 +213,7 @@ public class PageSpeed implements Monitor {
 
 		return new Status(Status.StatusCode.Success);
 	}
+
 
 	/**
 	 * Shuts the Plugin down and frees resources. This method is called in the
