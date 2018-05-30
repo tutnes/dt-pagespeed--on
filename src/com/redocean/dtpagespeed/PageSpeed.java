@@ -137,20 +137,32 @@ import com.google.gson.GsonBuilder;
 
         PagespeedApiPagespeedResponseV4 response = psapi.execute();
 
-        //Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures("PageStats", "numberResources");
+
+
+        PagespeedApiPagespeedResponseV4.PageStats returnedMeasures = response.getPageStats();
+        String measure;
         Collection<MonitorMeasure> monitorMeasures = env.getMonitorMeasures();
 		for (MonitorMeasure m : monitorMeasures) {
+        measure = m.getMeasureName();
 
+        if( returnedMeasures.containsKey(measure) ) {
+            log.info(measure);
+            m.setValue(Double.parseDouble(returnedMeasures.get(measure).toString()));
+        }
+       //for (String key : returnedMeasures) {
+        //returnedMeasures.forEach(String key,);
+/*
 			//this will book to the monitor measure
-            switch(m.getMeasureName()) {
+           switch(m.getMeasureName()) {
                 case "numberResources":
-                    m.setValue(response.getPageStats().getNumberResources());
+                    m.setValue((double)response.getPageStats().getNumberResources());
                     break;
                 case "cssResponseBytes":
                     m.setValue(response.getPageStats().getCssResponseBytes());
                     break;
                 case "flashResponseBytes":
-                    m.setValue(response.getPageStats().getFlashResponseBytes());
+                    //tmp = (double)response.getPageStats().getFlashResponseBytes();
+                    //m.setValue(tmp);
                     break;
                 case "htmlResponseBytes":
                     m.setValue(response.getPageStats().getHtmlResponseBytes());
@@ -162,28 +174,28 @@ import com.google.gson.GsonBuilder;
                     m.setValue(response.getPageStats().getJavascriptResponseBytes());
                     break;
                 case "numRenderBlockingRoundTrips":
-                    m.setValue(response.getPageStats().getNumRenderBlockingRoundTrips());
+                    m.setValue((double) response.getPageStats().getNumRenderBlockingRoundTrips());
                     break;
                 case "numTotalRoundTrips":
-                    m.setValue(response.getPageStats().getNumTotalRoundTrips());
+                    m.setValue((double)response.getPageStats().getNumTotalRoundTrips());
                     break;
                 case "numberCssResources":
-                    m.setValue(response.getPageStats().getNumberCssResources());
+                    m.setValue((double)response.getPageStats().getNumberCssResources());
                     break;
                 case "numberHosts":
-                    m.setValue(response.getPageStats().getNumberHosts());
+                    m.setValue((double)response.getPageStats().getNumberHosts());
                     break;
                 case "numberJsResources":
-                    m.setValue(response.getPageStats().getNumberJsResources());
+                    m.setValue((double)response.getPageStats().getNumberJsResources());
                     break;
                 case "numberRobotedResources":
-                    m.setValue(response.getPageStats().getNumberRobotedResources());
+                    //m.setValue((double)response.getPageStats().getNumberRobotedResources());
                     break;
                 case "numberStaticResources":
                     m.setValue(response.getPageStats().getNumberStaticResources());
                     break;
                 case "numberTransientFetchFailureResources":
-                    m.setValue(response.getPageStats().getNumberTransientFetchFailureResources());
+                    m.setValue((double)response.getPageStats().getNumberTransientFetchFailureResources());
                     break;
                 case "otherResponseBytes":
                     m.setValue(response.getPageStats().getOtherResponseBytes());
@@ -192,7 +204,7 @@ import com.google.gson.GsonBuilder;
                     m.setValue(response.getPageStats().getOverTheWireResponseBytes());
                     break;
                 case "responseCode":
-                    m.setValue(response.getResponseCode());
+                    m.setValue((double)response.getResponseCode());
                     break;
                 case "textResponseBytes":
                     m.setValue(response.getPageStats().getTextResponseBytes());
@@ -201,9 +213,9 @@ import com.google.gson.GsonBuilder;
                     m.setValue(response.getPageStats().getTotalRequestBytes());
                     break;
                 default:
-                    m.setValue(0);
+                    m.setValue(0.0);
             }
-
+*/
 
 
 
